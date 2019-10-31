@@ -1,0 +1,20 @@
+
+#version	450	
+
+layout (location = 0) in vec3 iPosition; // VBO: vbo[0]
+layout (location = 1) in vec3 iColor;    // VBO: vbo[1]
+
+out vec3 color; // output to fragment shader
+
+void	main(void)	{	
+	//gl_Position = vec4(sPos, sPos, sPos, 1.0);	
+	glBegin(GL_TRIANGLES);
+	glVertex3fv(iPosition.x);
+	glVertex3fv(iPosition.y);
+	glVertex3fv(iPosition.z);
+	
+	glEnd();
+	//gl_Position = vec4(iPosition.x, iPosition.y, iPosition.z, 1.0);	
+	color = iColor;	
+	
+}
