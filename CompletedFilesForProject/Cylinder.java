@@ -7,13 +7,15 @@ import java.nio.FloatBuffer;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 
-public class Cone extends JOGL1_4_5_Circle{
+public class Cylinder extends Cone{
 
 	static int depth = 8; // number of subdivisions
 	static int cRadius = 400, flip = 2;
+	static float length  = 1.0f;
 	int count=0; // used to generate triangle vertex indices
 
 
@@ -48,7 +50,7 @@ public class Cone extends JOGL1_4_5_Circle{
 	// draw a circle with center at the origin in xy plane
 	public void drawCircle(int cRadius, int depth) {
 		
-	    int numofTriangle= 4*(int)Math.pow(2,depth); // number of triangles after subdivision
+	    int numofTriangle=(2*2)*(4*(int)Math.pow(2,depth)); // number of triangles after subdivision
 	    float vPoints[] = new float[3*3*numofTriangle]; // 3 vertices each triangle, and 3 values each vertex
 
 	    //System.out.println("vPoints[] is used to save all triangle vertex values, pervertex values to be sent to the vertex shader");	
@@ -75,22 +77,53 @@ public class Cone extends JOGL1_4_5_Circle{
 
 	// subdivide a triangle recursively, and draw them
 	private void subdivideCircle(float[] vPoints, int radius, float[] v1, float[] v2, int depth) {
-		float v11[] = new float[3];
-		float v22[] = new float[3];
-		float v00[] = { 0, 0, 1.0f };
+		float v11a[] = new float[3];
+		float v11b[] = new float[3];
+		float v22a[] = new float[3];
+		float v22b[] = new float[3];
+		float v00a[] = { 0, 0, (length/2) };
+		float v00b[] = { 0, 0, ((-1 * length)/2)};
 		float v12[] = new float[3];
+		//float v12[] = new float[3];
 
 	    if (depth == 0) { // draw triangle
   	
 			for (int i = 0; i < 3; i++) {
-				v11[i] = v1[i] * radius/WIDTH;
-				v22[i] = v2[i] * radius/WIDTH;
+				v11a[i] = v1[i] * radius/WIDTH;
+				v22a[i] = v2[i] * radius/WIDTH;
+				v11b[i] = v1[i] * radius/WIDTH;
+				v22b[i] = v2[i] * radius/WIDTH;
 			}
 			//drawtriangle(v11, v22, v00);          
 			// load vPoints with the triangle vertex values
-			for (int i = 0; i < 3; i++)  vPoints[count++] = v11[i] ;
-			for (int i = 0; i < 3; i++)  vPoints[count++] = v22[i] ;
-			for (int i = 0; i < 3; i++)  vPoints[count++] = v00[i] ;     
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v11a[i] ; //For the top
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v22a[i] ;
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v00a[i] ;
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v11b[i] ;	//Bottom
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v22b[i] ;
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v00b[i] ;
+			
+			//for (int i = 0; i < 3; i++)  vPoints[count++] = v22a[i] ;	//LeftSide
+			//for (int i = 0; i < 3; i++)  vPoints[count++] = v11a[i] ;
+			//for (int i = 0; i < 3; i++)  vPoints[count++] = v11b[i] ;
+			
+			//for (int i = 0; i < 3; i++)  vPoints[count++] = v11b[i] ; //Right side
+			//for (int i = 0; i < 3; i++)  vPoints[count++] = v22b[i] ;
+			//for (int i = 0; i < 3; i++)  vPoints[count++] = v22a[i] ;
+			v11a[2] = (length/2); //Make sure outside edge has height
+			v22a[2] = (length/2);
+			v00a[2] = (length/2);
+			v11b[2] = ((-1 * length)/2);	//Bottom
+			v22b[2] = ((-1 * length)/2);
+			v00b[2] = ((-1 * length)/2);
+				
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v22a[i] ;	//LeftSide
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v11a[i] ;
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v11b[i] ;
+				
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v11b[i] ; //Right side
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v22b[i] ;
+			for (int i = 0; i < 3; i++)  vPoints[count++] = v22a[i] ;
              return;
 
         }
@@ -158,7 +191,13 @@ public class Cone extends JOGL1_4_5_Circle{
 		
 	
 	public static void main(String[] args) {
-		 new Cone();
+		 new Cylinder();
 
 	}
+	
+	public void drawCylinder( float radius, float length)
+	{
+		
+	}
+	
 }
