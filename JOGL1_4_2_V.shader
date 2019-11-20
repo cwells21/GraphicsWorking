@@ -1,4 +1,3 @@
-
 #version	450	
 
 uniform float theta; // input angle for rotation 
@@ -34,4 +33,3 @@ void	main(void)	{
     color =	vec3(abs(vColor.x), abs(vColor.y), abs(vColor.x*vColor.y));
 
 }
-

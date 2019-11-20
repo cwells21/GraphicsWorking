@@ -2,8 +2,17 @@
 #version	450	
 
 uniform float theta; // input angle for rotation 
+uniform mat4 mv_matrix; 
+uniform mat4 proj_matrix;
+uniform mat4 rotation_matrix;
+uniform mat4 translation_matrix;
+uniform mat4 scale_matrix;
 
-layout (location = 0) in vec3 iPosition; // VBO: vbo[0]
+
+layout (location = 0) in vec4 iPosition; // VBO: vbo[0]
+layout (location = 1) in vec3 iColor;    // VBO: vbo[1]
+
+
 
 out vec3 color; // output to fragment shader
 
@@ -13,17 +22,10 @@ void	main(void)	{
 	float dt = theta/50; 
 	
 //we do the rotation in shader
-mat4 rotate_z = mat4(cos(dt), -sin(dt), 0.0, 0.0,
-					 sin(dt), cos(dt), 0.0, 0.0,
-					 0.0, 0.0, 1.0, 0.0,
-					 0.0, 0.0, 0.0, 1.0);
-mat4 rotate_y = mat4(cos(dt), 0.0, sin(dt), 0.0,
-					 0.0, 1.0, 0.0, 0.0,
-					 -sin(dt), 0.0, cos(dt), 0.0,
-					 0.0, 0.0, 0.0, 1.0);					 
+			 
 
 	
-	gl_Position = rotate_y*rotate_z*vec4(iPosition.x, iPosition.y, iPosition.z, 1.0);	
+	gl_Position = proj_matrix*mv_matrix*vec4(iPosition.x, iPosition.y, iPosition.z, 1.0);	
 
 	if (iPosition.x == 0 && iPosition.y == 0 && iPosition.z == 0) vColor = vec3(0.5, 0.5, 0.5); 
 	else vColor = normalize(iPosition); // avoid zero length vector
